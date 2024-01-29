@@ -18,8 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 
 import hospital_backend
+import hospital_contract
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(hospital_backend.urls))
+    path('api/contract/', include('hospital_contract.urls'))
 ]

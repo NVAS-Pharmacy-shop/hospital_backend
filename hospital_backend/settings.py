@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 
 import hospital_backend
+import hospital_contract
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    hospital_backend,
-    'rest_framework'
+    'rest_framework',
+    'hospital_contract',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +81,12 @@ WSGI_APPLICATION = 'hospital_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'Hospital',
+        'USER': 'postgres',
+        'PASSWORD': 'super',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
