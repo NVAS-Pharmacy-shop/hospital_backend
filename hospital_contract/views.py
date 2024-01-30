@@ -1,3 +1,6 @@
+import json
+
+import pika
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
@@ -7,12 +10,13 @@ from rest_framework.views import APIView
 from hospital_contract import models
 from hospital_contract.models import Hospital, Equipment
 from hospital_contract.serializers import ContractSerializer, HospitalSerializer
-
+from hospital_contract.tasks import send_contract_to_rabbitmq
 
 class MakeContract(APIView):
     def post(self, request):
         hospital_id = request.data.get('hospital_id')
         equipment_data = request.data.get('equipment', [])
+        print(equipment_data)
         date = request.data.get('date')
         company = request.data.get('company')
 
@@ -23,6 +27,10 @@ class MakeContract(APIView):
             hospital = Hospital.objects.get(id=hospital_id)
         except Hospital.DoesNotExist:
             return Response({"error": "Hospital not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        existing_contract = models.Contract.objects.filter(hospital_id=hospital_id).first()
+        if existing_contract:
+            existing_contract.delete()
 
         contract_data = {
             'hospital': hospital,
@@ -37,13 +45,7 @@ class MakeContract(APIView):
             quantity = item.get('quantity')
             contract.equipment.create(equipment_id=equipment_id, quantity=quantity)
 
-        serializer = ContractSerializer(data=contract)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(contract, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        send_contract_to_rabbitmq(contract.id)
 
 
-
+        return Response({"contract_id": contract.id}, status=status.HTTP_201_CREATED)

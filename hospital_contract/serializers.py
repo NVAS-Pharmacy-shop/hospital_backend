@@ -13,7 +13,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
 class ContractSerializer(serializers.ModelSerializer):
     hospital = HospitalSerializer(read_only=True)
-    equipment = EquipmentSerializer(many=True)
+    equipment = EquipmentSerializer(many=True, required=False)
     class Meta:
         model = Contract
         fields = ['id', 'hospital', 'date', 'company', 'equipment']

@@ -15,3 +15,7 @@ class Contract(models.Model):
     company = models.IntegerField(default=-1)
     equipment = models.ManyToManyField(Equipment)
 
+    def delete(self, *args, **kwargs):
+        # Delete associated equipment
+        self.equipment.all().delete()
+        super(Contract, self).delete(*args, **kwargs)
