@@ -14,6 +14,7 @@ class Contract(models.Model):
     date = models.DateTimeField(default='2024-01-01 00:00:00')
     company = models.IntegerField(default=-1)
     equipment = models.ManyToManyField(Equipment)
+    status = models.CharField(max_length=15, default='active')
 
     def delete(self, *args, **kwargs):
         # Delete associated equipment
