@@ -7,6 +7,7 @@ def send_contract_to_rabbitmq(contract_id):
         contract = Contract.objects.get(id=contract_id)
 
         contract_data = {
+            'contract_id': contract_id,
             'hospital_id': contract.hospital_id,
             'date': contract.date.strftime('%Y-%m-%d,%H:%M:%S'),
             'company': contract.company,
