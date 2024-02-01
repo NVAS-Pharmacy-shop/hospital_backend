@@ -16,8 +16,8 @@ def send_contract_to_rabbitmq(contract_id):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
 
-        channel.queue_declare(queue='delivered')
-        channel.basic_publish(exchange='', routing_key='delivered', body=json.dumps(contract_data))
+        channel.queue_declare(queue='contract_requests')
+        channel.basic_publish(exchange='', routing_key='contract_requests', body=json.dumps(contract_data))
 
         print("Contract sent to RabbitMQ")
 
@@ -31,8 +31,8 @@ def send_delivered_equipment_to_rabbitmq(contract_id):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
 
-        channel.queue_declare(queue='equipment_delivery')
-        channel.basic_publish(exchange='', routing_key='equipment_delivery', body=json.dumps(contract_id))
+        channel.queue_declare(queue='delivered')
+        channel.basic_publish(exchange='', routing_key='delivered', body=json.dumps(contract_id))
 
         print("Contract sent to RabbitMQ")
 

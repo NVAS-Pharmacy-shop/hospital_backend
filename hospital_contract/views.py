@@ -19,6 +19,7 @@ class MakeContract(APIView):
         print(equipment_data)
         date = request.data.get('date')
         company = request.data.get('company')
+        print(date)
 
         if not hospital_id or not date or not company:
             return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
