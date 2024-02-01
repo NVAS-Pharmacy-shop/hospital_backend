@@ -1,7 +1,9 @@
 import json
+from datetime import timedelta
 
 import pika
 from django.shortcuts import render
+from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -14,12 +16,13 @@ from hospital_contract.tasks import send_contract_to_rabbitmq
 
 class MakeContract(APIView):
     def post(self, request):
+        print(request.data)
         hospital_id = request.data.get('hospital_id')
         equipment_data = request.data.get('equipment', [])
         print(equipment_data)
         date = request.data.get('date')
+        date = parse_datetime(date) - timedelta(minutes=int(request.data.get('timezone_offset')))
         company = request.data.get('company')
-        print(date)
 
         if not hospital_id or not date or not company:
             return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
